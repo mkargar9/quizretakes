@@ -1,0 +1,12 @@
+<courses>
+  <course> <!-- Maybe in the future all in one XML file? -->
+    <courseID>swe437</courseID> <!-- Used in file names and displayed -->
+    <courseTitle>Software testing</courseTitle> <!-- String to be displayed -->
+    <retakeDuration>14</retakeDuration> <!-- int, number of days retake is possible -->
+    <startSkipMonth>1</startSkipMonth>
+    <startSkipDay>21</startSkipDay>
+    <endSkipMonth>1</endSkipMonth>
+    <endSkipDay>25</endSkipDay>
+    <dataLocation>/var/www/CS/webapps/offutt/WEB-INF/data/</dataLocation>
+  </course>
+</courses>

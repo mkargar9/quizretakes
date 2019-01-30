@@ -1,0 +1,17 @@
+echo Copying .class files to /home/offutt/webapps/WEB-INF/classes/quizretakes/
+cp quizschedule.class /home/offutt/webapps/WEB-INF/classes/quizretakes/
+cp servletUtils.class /home/offutt/webapps/WEB-INF/classes/quizretakes/
+cp quizBean.class /home/offutt/webapps/WEB-INF/classes/quizretakes/
+cp quizReader.class /home/offutt/webapps/WEB-INF/classes/quizretakes/
+cp quizzes.class /home/offutt/webapps/WEB-INF/classes/quizretakes/
+cp retakeBean.class /home/offutt/webapps/WEB-INF/classes/quizretakes/
+cp retakes.class /home/offutt/webapps/WEB-INF/classes/quizretakes/
+cp retakesReader.class /home/offutt/webapps/WEB-INF/classes/quizretakes/
+cp apptBean.class /home/offutt/webapps/WEB-INF/classes/quizretakes/
+cp apptsReader.class /home/offutt/webapps/WEB-INF/classes/quizretakes/
+cp courseReader.class /home/offutt/webapps/WEB-INF/classes/quizretakes/
+cp courseBean.class /home/offutt/webapps/WEB-INF/classes/quizretakes/
+
+echo copying xml files to /webapps/offutt/WEB-INF/data
+cp quiz-orig-swe437.xml /webapps/offutt/WEB-INF/data
+cp quiz-retakes-swe437.xml /webapps/offutt/WEB-INF/data

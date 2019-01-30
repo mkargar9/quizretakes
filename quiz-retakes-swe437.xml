@@ -1,0 +1,28 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<retakes>
+
+  <retake>
+    <id>1</id>
+    <location>EB 4430</location> <!-- Prof's office hours -->
+    <dateGiven> <!-- Same format as in quiz-orig.xml -->
+      <month>1</month> <!-- 01..12 -->
+      <day>30</day> <!-- 1..31 -->
+      <hour>15</hour> <!-- 0..23 -->
+      <minute>30</minute> <!--  0-59 -->
+    </dateGiven>
+  </retake>
+
+  <retake>
+    <id>2</id>
+    <location>???</location> <!-- TA's office hours -->
+    <dateGiven> <!-- Same format as in quizzes.xml -->
+      <month>2</month> <!-- 01..12 -->
+      <day>5</day> <!-- 1..31 -->
+      <hour>16</hour> <!-- 0..23 -->
+      <minute>00</minute> <!--  0-59 -->
+    </dateGiven>
+  </retake>
+
+<!-- Add more retakes below ... the id should be unique and increment with date -->
+
+</retakes>

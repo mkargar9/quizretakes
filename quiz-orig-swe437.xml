@@ -1,0 +1,26 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<quizzes>
+
+  <quiz>
+    <id>1</id> <!-- integer > 0 -->
+    <dateGiven>
+      <month>1</month> <!-- 1..12 -->
+      <day>29</day> <!-- 1..31 -->
+      <hour>10</hour> <!-- 0..23 -->
+      <minute>30</minute> <!-- 0-59 -->
+    </dateGiven>
+  </quiz>
+
+  <quiz>
+    <id>2</id>
+    <dateGiven>
+      <month>2</month>
+      <day>5</day>
+      <hour>10</hour>
+      <minute>30</minute>
+    </dateGiven>
+  </quiz>
+
+<!-- ... add remaining quizzes below -->
+
+</quizzes>
