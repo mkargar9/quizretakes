@@ -1,12 +1,6 @@
 // JO 3-Jan-2019
 package quizretakes;
-
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.ServletException;
-import javax.servlet.ServletContext;
+import java.util.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.xml.parsers.ParserConfigurationException;
@@ -46,7 +40,7 @@ import java.io.IOException;
  *    retakes.xml -- Data file of when retakes are given
  */
 
-public class quizschedule extends HttpServlet
+public class quizschedule
 {
    // Data files
    // location maps to /webapps/offutt/WEB-INF/data/ from a terminal window.
@@ -74,11 +68,47 @@ public class quizschedule extends HttpServlet
    private String thisServlet = "";
 
 
-// doGet() : Prints the form to schedule a retake
-@Override
-protected void doGet (HttpServletRequest request, HttpServletResponse response)
-                     throws ServletException, IOException
+// replace doGet with main() because of CLI
+public static void main (String args[])
 {
+   //starting prompts to get data
+   System.out.println("GMU quiz retake scheduler");
+   System.out.println("Please enter the course ID given to you by your instructor."
+            + "It is probably the same as the university course ID, with no spaces."
+            + "Please press enter when done.");
+
+   Scanner scan = new Scanner(System.in);
+   String courseID = scan.nextLine();
+
+   if ( courseID.equalsIgnoreCase("swe437") ) //make sure accessing the right class
+   {
+      System.out.println("GMU quiz retake scheduler for class Software testing");
+      System.out.println("You can sign up for quiz retakes within the next two weeks."
+              + "Enter your name (as it appears on the class roster, first and last name."
+               + "Press enter when done");
+      String studentName = scan.nextLine();
+      //TODO:make sure string inputted not null / no name - no anonymous quizzes
+      //TODO: need to store student name using write() method
+
+      //TODO:print out list of QUIZZES
+      System.out.println("Thank you, please select a Quiz from the options above."
+            + "You can select which date, time, and quiz you wish to retake from the following list"
+              + "Type the corresponding number and press enter.");
+
+      int quizID = scan.nextInt();
+      //TODO: need to store quiz ID (quiz number) and retake ID (date of retake) using write()
+
+      System.out.println(studentName + ": your appointment has been scheduled."
+            + "Please arrive in time to finish the quiz before the end of the retake period."
+              + "If you cannot make it, please cancel by sending email to your professor.");
+   }
+   else
+   {
+      System.out.println("Sorry! We do not currently offer Quiz Retakes for that courseID.");
+      //TODO: add functionality here to retype courseID / start over
+   }
+
+   /**
    response.setContentType ("text/html");
    PrintWriter out = response.getWriter ();
    servletUtils.printHeader (out);
@@ -88,7 +118,8 @@ protected void doGet (HttpServletRequest request, HttpServletResponse response)
    // CS server has a flaw--requires https & 8443, but puts http & 8080 on the requestURL
    thisServlet = thisServlet.replace("http", "https");
    thisServlet = thisServlet.replace("8080", "8443");
-
+    **/
+   /**
    // CourseID must be a parameter (also in course XML file, but we need to know which course XML file ...)
    courseID = request.getParameter("courseID");
    if (courseID != null && !courseID.isEmpty())
@@ -132,13 +163,13 @@ protected void doGet (HttpServletRequest request, HttpServletResponse response)
       servletUtils.printNeedCourseID (out, thisServlet, "");
    }
    servletUtils.printFooter (out);
+    **/
 }
 
-// doPost saves an appointment in a file and prints an acknowledgement
-@Override
-protected void doPost (HttpServletRequest request, HttpServletResponse response)
-                      throws ServletException, IOException
+// changes doPost() to method  write() to write information to the data file
+public void write()
 {
+   /**
    // No saving if IOException
    boolean IOerrFlag = false;
    String IOerrMessage = "";
@@ -212,6 +243,7 @@ protected void doPost (HttpServletRequest request, HttpServletResponse response)
       out.println("<p><a href='" + thisServlet + "?courseID=" + courseID + "'>You can try again if you like.</a>");
    }
    servletUtils.printFooter (out);
+    **/
 }
 
 /**
@@ -219,7 +251,7 @@ protected void doPost (HttpServletRequest request, HttpServletResponse response)
  * @param out PrintWriter
  * @throws ServletException
  * @throws IOException
-*/
+
 private void printQuizScheduleForm (PrintWriter out, quizzes quizList, retakes retakesList, courseBean course)
         throws ServletException, IOException
 {
@@ -332,5 +364,6 @@ private void printQuizScheduleForm (PrintWriter out, quizzes quizList, retakes r
    }
    out.println ("</table>");
 }
+**/
 
 } // end quizschedule class
