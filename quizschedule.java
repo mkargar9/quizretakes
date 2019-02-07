@@ -60,7 +60,7 @@ public class quizschedule
 
    //map between QuizId and RetakeID
    //retake is key, quiz is value
-   private Hashmap <int, ArrayList<int>> map = new HashMap<int,ArrayList<int>>();
+   private Hashmap <Integer, ArrayList<Integer>> map = new HashMap<Integer,ArrayList<Integer>>();
 
 
 // replace doGet with main() because of CLI
@@ -125,17 +125,20 @@ public static void main (String args[])
       System.out.println("Please select the quiz ID you want to retake, type the corresponding quiz number and press enter");
       int quizID = scan.nextInt();
 
-      if (map.containsKey(retakeID))
+      Integer retakeINT = retakeID;
+      Integer quizINT = quizID;
+
+      if (map.containsKey(retakeINT))
       {
-         ArrayList<int> t = map.get(retakeID);
-         t.add(quizID);
-         map.put(retakeID, t);
+         ArrayList<Integer> t = map.get(retakeID);
+         t.add(quizINT);
+         map.put(retakeINT, t);
       }
       else
       {
-         ArrayList<int> i = new ArrayList<int>();
-         i.add(quizID);
-         map.put(retakeID, quizID);
+         ArrayList<Integer> i = new ArrayList<Integer>();
+         i.add(quizINT);
+         map.put(retakeINT, quizINT);
       }
 
       boolean ifSuccessful = write(studentName, retakeID, quizID, courseID);
@@ -204,7 +207,7 @@ public static void printList (quizzes quizList, retakes retakesList, courseBean 
 
                for ( map.entry temp: map.entrySet())
                {
-                  for ( int i : temp.getValue() )
+                  for ( Integer i : temp.getValue() )
                   {
                      bw.write( temp.getKey() + separator + i + "\n");
 
