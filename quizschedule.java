@@ -60,7 +60,7 @@ public class quizschedule
 
    //map between QuizId and RetakeID
    //retake is key, quiz is value
-   private Hashmap <Integer, ArrayList<Integer>> map = new HashMap<Integer,ArrayList<Integer>>();
+   private static HashMap <Integer, ArrayList<Integer>> map = new HashMap<Integer,ArrayList<Integer>>();
 
 
 // replace doGet with main() because of CLI
@@ -77,7 +77,7 @@ public static void main (String args[])
 
    if ( courseID.equalsIgnoreCase("swe437") ) //make sure accessing the right class
    {
-      courseBean course;
+      quizretakes.courseBean course;
       courseReader cr = new courseReader();
       courseFileName = dataLocation + courseBase + "-" + courseID + ".xml";
       try
@@ -178,7 +178,6 @@ public static void printList (quizzes quizList, retakes retakesList, courseBean 
         }
   }
 }
-   @Override
    public static boolean write (String StudentName, int RetakeID , int QuizID, String courseID)
    {
       // No saving if IOException
@@ -205,12 +204,14 @@ public static void printList (quizzes quizList, retakes retakesList, courseBean 
                FileWriter     fw = new FileWriter(file.getAbsoluteFile(), true); //append mode
                BufferedWriter bw = new BufferedWriter(fw);
 
-               for ( map.entry temp: map.entrySet())
-               {
-                  for ( Integer i : temp.getValue() )
-                  {
-                     bw.write( temp.getKey() + separator + i + "\n");
 
+               for ( HashMap.Entry<Integer, ArrayList<Integer>> entry: map.entrySet())
+               {
+                  Integer key = entry.getKey();
+                  ArrayList<Integer> val = entry.getValue();
+                  for ( Integer i : val)
+                  {
+                     bw.write( key+ separator + i + "\n");
                   }
                }
 
@@ -220,6 +221,7 @@ public static void printList (quizzes quizList, retakes retakesList, courseBean 
          } catch (IOException e) {
             IOerrFlag = true;
             IOerrMessage = "I failed and could not save your appointment." + e;
+            return false;
          }
 
          // Respond to the student
@@ -239,7 +241,9 @@ public static void printList (quizzes quizList, retakes retakesList, courseBean 
             System.out.println ("You didn't give a name ... no anonymous quiz retakes.");
 
          System.out.println("courseID=" + courseID + ". You can try again if you like.");
+         return false;
       }
+      return true;
    }
 
 } // end quizschedule class
