@@ -36,12 +36,12 @@ public class quizschedule
    // Data files
    // location maps to /webapps/offutt/WEB-INF/data/ from a terminal window.
    // These names show up in all servlets
-   private static final String dataLocation = System.getProperty("user.dir");
-   static private final String separator    = ",";
+   private static final String dataLocation    = "/var/www/CS/webapps/offutt/WEB-INF/data/";
+   static private final String separator = ",";
    private static final String courseBase   = "course";
-   private static final String quizzesBase  = "quiz-orig";
-   private static final String retakesBase  = "quiz-retakes";
-   private static final String apptsBase    = "quiz-appts";
+   private static final String quizzesBase = "quiz-orig";
+   private static final String retakesBase = "quiz-retakes";
+   private static final String apptsBase   = "quiz-appts";
 
    // Filenames to be built from above and the courseID parameter
    private String courseFileName;
@@ -73,47 +73,14 @@ public static void main (String args[])
 
    if ( courseID.equalsIgnoreCase("swe437") ) //make sure accessing the right class
    {
-      courseBean course;
-      courseReader cr = new courseReader();
-      courseFileName = dataLocation + courseBase + "-" + courseID + ".xml";
-      try
-      {
-        course = cr.read(courseFileName);
-      } catch (Exception e) {
-        System.out.println(e);
-        return;
-      }
-      daysAvailable = Integer.parseInt(course.getRetakeDuration());
-
-      System.out.println("GMU quiz retake scheduler for class Software Testing");
+      System.out.println("GMU quiz retake scheduler for class Software testing");
       System.out.println("You can sign up for quiz retakes within the next two weeks."
-              + "Enter your name (as it appears on the class roster, first and last name)."
+              + "Enter your name (as it appears on the class roster, first and last name."
                + "Press enter when done");
       String studentName = scan.nextLine();
-      //TODO: need to store student name using write() method... why now? can't we just do that when adding the appt?
+      //TODO: need to store student name using write() method
 
       //TODO:print out list of QUIZZES
-      // Filenames to be built from above and the courseID
-      String quizzesFileName = dataLocation + quizzesBase + "-" + courseID + ".xml";
-      String retakesFileName = dataLocation + retakesBase + "-" + courseID + ".xml";
-
-      // Load the quizzes and the retake times from disk
-      quizzes quizList    = new quizzes();
-      retakes retakesList = new retakes();
-      quizReader    qr = new quizReader();
-      retakesReader rr = new retakesReader();
-
-      try
-      { // Read the files and print the form
-        quizList    = qr.read (quizzesFileName);
-        retakesList = rr.read (retakesFileName);
-        printList(quizList, retakesList, course);
-      } catch (Exception e)
-      {
-        System.out.println(e);
-        return;
-      }
-
       System.out.println("Thank you, please select a Quiz Session from the options above."
             + "You can select which date and time you wish to schedule the retake from the following list."
               + "Type the corresponding session number and press enter.");
@@ -147,15 +114,4 @@ public static boolean write ( String StudentName, int RetakeID, int QuizID)
    return false;
 }
 
-public static void printList (quizzes quizList, retakes retakesList, courseBean course)
-{
-  for(retakeBean r: retakesList)
-  {
-     System.out.println(r.toString());
-        for(quizBean q: quizList)
-        {
-           System.out.println(q.toString());
-        }
-  }
-}
 } // end quizschedule class
