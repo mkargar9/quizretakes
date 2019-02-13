@@ -97,6 +97,7 @@ public static void main(String []argv) /* CLI */
       return;
    }
 
+<<<<<<< HEAD
    daysAvailable = Integer.parseInt(course.getRetakeDuration());
 
    try { // Read the files and print the form
@@ -110,6 +111,11 @@ public static void main(String []argv) /* CLI */
       System.out.println("Can't read the data files for course ID " + courseID + ". You can try again with a different courseID.");
       return;
    }
+=======
+   //map between QuizId and RetakeID
+   //retake is key, quiz is value
+   private static HashMap <Integer, ArrayList<Integer>> map = new HashMap<Integer,ArrayList<Integer>>();
+>>>>>>> d7bf3fc8805c60ea4cc14a1452689efbc122ff09
 
    // This replaces the submit-response (was doPost() )
    readInputSave(sc, courseID); /* CLI */
@@ -142,6 +148,7 @@ private static void readInputSave(Scanner sc, String courseID) /* CLI */
 
          bw.write(retakeQuizID + separator + studentName + "\n");
 
+<<<<<<< HEAD
          bw.flush();
          bw.close();
 
@@ -154,6 +161,49 @@ private static void readInputSave(Scanner sc, String courseID) /* CLI */
       } else {
          System.out.println("");
          System.out.println("I don't have a retake time for that number. Please try again.");
+=======
+   if ( courseID.equalsIgnoreCase("swe437") ) //make sure accessing the right class
+   {
+      quizretakes.courseBean course;
+      courseReader cr = new courseReader();
+      courseFileName = dataLocation + courseBase + "-" + courseID + ".xml";
+      try
+      {
+        course = cr.read(courseFileName);
+      } catch (Exception e) {
+        System.out.println(e);
+        return;
+      }
+      daysAvailable = Integer.parseInt(course.getRetakeDuration());
+
+      System.out.println("GMU quiz retake scheduler for class Software Testing");
+      System.out.println("You can sign up for quiz retakes within the next two weeks."
+              + "Enter your name (as it appears on the class roster, first and last name)."
+               + "Press enter when done");
+      String studentName = scan.nextLine();
+      //TODO: need to store student name using write() method... why now? can't we just do that when adding the appt?
+
+      //TODO:print out list of QUIZZES
+      // Filenames to be built from above and the courseID
+      String quizzesFileName = dataLocation + quizzesBase + "-" + courseID + ".xml";
+      String retakesFileName = dataLocation + retakesBase + "-" + courseID + ".xml";
+
+      // Load the quizzes and the retake times from disk
+      quizzes quizList    = new quizzes();
+      retakes retakesList = new retakes();
+      quizReader    qr = new quizReader();
+      retakesReader rr = new retakesReader();
+
+      try
+      { // Read the files and print the form
+        quizList    = qr.read (quizzesFileName);
+        retakesList = rr.read (retakesFileName);
+        printList(quizList, retakesList, course);
+      } catch (Exception e)
+      {
+        System.out.println(e);
+        return;
+>>>>>>> d7bf3fc8805c60ea4cc14a1452689efbc122ff09
       }
    } catch(IOException e) {
       System.out.println("");
@@ -261,6 +311,54 @@ private static String readCourseID(Scanner sc) /* CLI */
    System.out.print("Enter courseID: "); /* CLI */
    return(sc.next()); /* CLI */
 }
+<<<<<<< HEAD
+=======
+   public static boolean write (String StudentName, int RetakeID , int QuizID, String courseID)
+   {
+      // No saving if IOException
+      boolean IOerrFlag = false;
+      String IOerrMessage = "";
+
+      // Filename to be built from above and the courseID
+      String apptsFileName   = dataLocation + apptsBase + "-" + courseID + ".txt"; //?
+
+      // Get name and list of retake requests from parameters
+      String studentName = StudentName;
+
+      if(map != null && studentName != null && studentName.length() > 0)
+      {
+         // Append the new appointment to the file
+         try {
+            File file = new File(apptsFileName);
+            synchronized(file)
+            { // Only one student should touch this file at a time.
+               if (!file.exists())
+               {
+                  file.createNewFile();
+               }
+               FileWriter     fw = new FileWriter(file.getAbsoluteFile(), true); //append mode
+               BufferedWriter bw = new BufferedWriter(fw);
+
+
+               for ( HashMap.Entry<Integer, ArrayList<Integer>> entry: map.entrySet())
+               {
+                  Integer key = entry.getKey();
+                  ArrayList<Integer> val = entry.getValue();
+                  for ( Integer i : val)
+                  {
+                     bw.write( key+ separator + i + "\n");
+                  }
+               }
+
+               bw.flush();
+               bw.close();
+            } // end synchronize block
+         } catch (IOException e) {
+            IOerrFlag = true;
+            IOerrMessage = "I failed and could not save your appointment." + e;
+            return false;
+         }
+>>>>>>> d7bf3fc8805c60ea4cc14a1452689efbc122ff09
 
 // ===============================================================
 // Read the course file
@@ -282,6 +380,7 @@ private static quizzes readQuizzes(String courseID) throws Exception /* CLI */
    return(quizList); /* CLI */
 }
 
+<<<<<<< HEAD
 // ===============================================================
 // Read the retakes file
 private static retakes readRetakes(String courseID) throws Exception /* CLI */
@@ -291,5 +390,12 @@ private static retakes readRetakes(String courseID) throws Exception /* CLI */
    retakesList         = rr.read(retakesFileName);
    return(retakesList); /* CLI */
 }
+=======
+         System.out.println("courseID=" + courseID + ". You can try again if you like.");
+         return false;
+      }
+      return true;
+   }
+>>>>>>> d7bf3fc8805c60ea4cc14a1452689efbc122ff09
 
 } // end quizschedule class
