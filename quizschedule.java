@@ -1,11 +1,33 @@
-// JO 3-Jan-2019
+// JO, Jan 2019
 package quizretakes;
-import java.util.*;
+
+// A command line interface (CLI) for the quizschedule servlet
+// SWE 437, Assignment 2, Spring 2019
+// This class is based on the quizschedule.java servlet
+// Removed all the servlet stuff
+// New code has the comment /* CLI */
+
+import java.util.Scanner; /* CLI */
+
+//=============================================================================
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.PrintStream;
+import javax.xml.parsers.ParserConfigurationException;
+import java.util.ArrayList;
 import java.time.*;
 import java.lang.Long;
 import java.lang.String;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+
+import java.util.Properties; /* CLI */
 
 /**
  * @author Jeff Offutt
@@ -14,232 +36,260 @@ import java.io.*;
  * Wiring the pieces together:
  *    quizschedule.java -- Servlet entry point for students to schedule quizzes
  *    quizReader.java -- reads XML file and stores in quizzes.
-                             Used by quizschedule.java
+ *                       Used by quizschedule.java
  *    quizzes.java -- A list of quizzes from the XML file
  *                    Used by quizschedule.java
  *    quizBean.java -- A simple quiz bean
- *                      Used by quizzes.java and readQuizzesXML.java
+ *                     Used by quizzes.java and readQuizzesXML.java
  *    retakesReader.java -- reads XML file and stores in retakes.
-                             Used by quizschedule.java
+ *                          Used by quizschedule.java
  *    retakes.java -- A list of retakes from the XML file
  *                    Used by quizschedule.java
  *    retakeBean.java -- A simple retake bean
- *                      Used by retakes.java and readRetakesXML.java
+ *                       Used by retakes.java and readRetakesXML.java
  *    apptBean.java -- A bean to hold appointments
-
+ *
  *    quizzes.xml -- Data file of when quizzes were given
  *    retakes.xml -- Data file of when retakes are given
+ *    course.xml -- Data file with information about the course
  */
 
-public class quizschedule
+public class quizsched
 {
+   // Used to pass retakeID,quizID pairs from printQuizScheduleForm() to readInputSave()
+   private static Properties retakeQuizIDProps = new Properties(); /* CLI */
+
    // Data files
-   // location maps to /webapps/offutt/WEB-INF/data/ from a terminal window.
-   // These names show up in all servlets
-   private static final String dataLocation = System.getProperty("user.dir");
-   static private final String separator    = ",";
+   /* CLI: All variables changed to static to use in main() */
+   private static final String dataLocation = "quizretakes/"; /* CLI */
+   private static final String separator    = ",";
    private static final String courseBase   = "course";
    private static final String quizzesBase  = "quiz-orig";
    private static final String retakesBase  = "quiz-retakes";
    private static final String apptsBase    = "quiz-appts";
 
-   // Filenames to be built from above and the courseID parameter
-   private String courseFileName;
-   private String quizzesFileName;
-   private String retakesFileName;
-   private String apptsFileName;
+   // Filenames to be built from above and the courseID
+   private static String courseFileName;
+   private static String quizzesFileName;
+   private static String retakesFileName;
+   private static String apptsFileName;
 
-   // Passed as parameter and stored in course.xml file (format: "swe437")
-   private String courseID;
    // Stored in course.xml file, default 14
    // Number of days a retake is offered after the quiz is given
-   private int daysAvailable = 14;
+   private static int daysAvailable = 14;
 
-   // To be set by getRequestURL()
-   private String thisServlet = "";
-
-   //map between QuizId and RetakeID
-   //retake is key, quiz is value
-   private Hashmap <Integer, ArrayList<Integer>> map = new HashMap<Integer,ArrayList<Integer>>();
-
-
-// replace doGet with main() because of CLI
-public static void main (String args[])
+// ===============================================================
+// Prints the form to schedule a retake
+public static void main(String []argv) /* CLI */
 {
-   //starting prompts to get data
-   System.out.println("GMU quiz retake scheduler");
-   System.out.println("Please enter the course ID given to you by your instructor."
-            + "It is probably the same as the university course ID, with no spaces."
-            + "Please press enter when done.");
+   Scanner sc = new Scanner(System.in); /* CLI */
 
-   Scanner scan = new Scanner(System.in);
-   String courseID = scan.nextLine();
+   // Get course ID from user (could be passed as a command line parameter ...)
+   String courseID = readCourseID(sc); /* CLI */
+   buildFileNames(courseID); /* CLI */
 
-   if ( courseID.equalsIgnoreCase("swe437") ) //make sure accessing the right class
-   {
-      courseBean course;
-      courseReader cr = new courseReader();
-      courseFileName = dataLocation + courseBase + "-" + courseID + ".xml";
-      try
-      {
-        course = cr.read(courseFileName);
-      } catch (Exception e) {
-        System.out.println(e);
-        return;
-      }
-      daysAvailable = Integer.parseInt(course.getRetakeDuration());
-
-      System.out.println("GMU quiz retake scheduler for class Software Testing");
-      System.out.println("You can sign up for quiz retakes within the next two weeks."
-              + "Enter your name (as it appears on the class roster, first and last name)."
-               + "Press enter when done");
-      String studentName = scan.nextLine();
-      //TODO: need to store student name using write() method... why now? can't we just do that when adding the appt?
-
-      //TODO:print out list of QUIZZES
-      // Filenames to be built from above and the courseID
-      String quizzesFileName = dataLocation + quizzesBase + "-" + courseID + ".xml";
-      String retakesFileName = dataLocation + retakesBase + "-" + courseID + ".xml";
-
-      // Load the quizzes and the retake times from disk
-      quizzes quizList    = new quizzes();
-      retakes retakesList = new retakes();
-      quizReader    qr = new quizReader();
-      retakesReader rr = new retakesReader();
-
-      try
-      { // Read the files and print the form
-        quizList    = qr.read (quizzesFileName);
-        retakesList = rr.read (retakesFileName);
-        printList(quizList, retakesList, course);
-      } catch (Exception e)
-      {
-        System.out.println(e);
-        return;
-      }
-
-      System.out.println("Thank you, please select a Quiz Session from the options above."
-            + "You can select which date and time you wish to schedule the retake from the following list."
-              + "Type the corresponding session number and press enter.");
-      int retakeID = scan.nextInt();
-      System.out.println("Please select the quiz ID you want to retake, type the corresponding quiz number and press enter");
-      int quizID = scan.nextInt();
-
-      Integer retakeINT = retakeID;
-      Integer quizINT = quizID;
-
-      if (map.containsKey(retakeINT))
-      {
-         ArrayList<Integer> t = map.get(retakeID);
-         t.add(quizINT);
-         map.put(retakeINT, t);
-      }
-      else
-      {
-         ArrayList<Integer> i = new ArrayList<Integer>();
-         i.add(quizINT);
-         map.put(retakeINT, quizINT);
-      }
-
-      boolean ifSuccessful = write(studentName, retakeID, quizID, courseID);
-      if ( ifSuccessful )
-      {
-         System.out.println(studentName + ": your appointment has been scheduled."
-                 + "Please arrive in time to finish the quiz before the end of the retake period."
-                 + "If you cannot make it, please cancel by sending email to your professor.");
-      }
-      else
-      {
-         System.out.println("Sorry, I could not schedule your appointment. You can try again");
-         //TODO: start over
-      }
+   // Get information about the course
+   courseBean course;
+   try {
+      course = readCourseFile(courseID);
+   } catch(Exception e) {
+      System.out.println("Can't find the data files for course ID " + courseID + ". You can try again with a different course ID.");
+      return;
    }
-   else
-   {
-      System.out.println("Sorry! We do not currently offer Quiz Retakes for that courseID.");
-      //TODO: add functionality here to retype courseID / start over
+
+   daysAvailable = Integer.parseInt(course.getRetakeDuration());
+
+   try { // Read the files and print the form
+      quizzes quizList; /* CLI */
+      retakes retakesList; /* CLI */
+      quizList    =  readQuizzes(courseID); /* CLI */
+      retakesList = readRetakes(courseID); /* CLI */
+      // Inside try-block so this won't print if files can't be read
+      printQuizScheduleForm(quizList, retakesList, course);
+   } catch(Exception e) {
+      System.out.println("Can't read the data files for course ID " + courseID + ". You can try again with a different courseID.");
+      return;
    }
-}
 
-// changes doPost() to method  write() to write information to the data file
-public static boolean write ( String StudentName, int RetakeID, int QuizID)
+   // This replaces the submit-response (was doPost() )
+   readInputSave(sc, courseID); /* CLI */
+}  // end main()
+
+// ===============================================================
+// Was doPost()
+// Called from main to read student's choice and save to file
+private static void readInputSave(Scanner sc, String courseID) /* CLI */
 {
-   return false;
-}
+   // Get name and list of retake requests from user
+   System.out.print("What is your name? ");
+   String studentName = sc.next();
 
-public static void printList (quizzes quizList, retakes retakesList, courseBean course)
-{
-  for(retakeBean r: retakesList)
-  {
-     System.out.println(r.toString());
-        for(quizBean q: quizList)
-        {
-           System.out.println(q.toString());
-        }
-  }
-}
-   @Override
-   public static boolean write (String StudentName, int RetakeID , int QuizID, String courseID)
-   {
-      // No saving if IOException
-      boolean IOerrFlag = false;
-      String IOerrMessage = "";
+   System.out.print("Enter a number from the list to schedule a retake: "); /* CLI */
+   String retake = sc.next(); /* CLI */
+   String retakeQuizID = retakeQuizIDProps.getProperty(retake); /* CLI */
 
-      // Filename to be built from above and the courseID
-      String apptsFileName   = dataLocation + apptsBase + "-" + courseID + ".txt"; //?
-
-      // Get name and list of retake requests from parameters
-      String studentName = StudentName;
-
-      if(map != null && studentName != null && studentName.length() > 0)
-      {
-         // Append the new appointment to the file
-         try {
-            File file = new File(apptsFileName);
-            synchronized(file)
-            { // Only one student should touch this file at a time.
-               if (!file.exists())
-               {
-                  file.createNewFile();
-               }
-               FileWriter     fw = new FileWriter(file.getAbsoluteFile(), true); //append mode
-               BufferedWriter bw = new BufferedWriter(fw);
-
-               for ( map.entry temp: map.entrySet())
-               {
-                  for ( Integer i : temp.getValue() )
-                  {
-                     bw.write( temp.getKey() + separator + i + "\n");
-
-                  }
-               }
-
-               bw.flush();
-               bw.close();
-            } // end synchronize block
-         } catch (IOException e) {
-            IOerrFlag = true;
-            IOerrMessage = "I failed and could not save your appointment." + e;
-         }
-
-         // Respond to the student
-         if (IOerrFlag)
+   // Append the new appointment to the file
+   try {
+      File file = new File(apptsFileName);
+      if(retakeQuizID != null) /* CLI */
+      {  // user must choose one of the numbers on screen
+         if(!file.exists())
          {
-            System.out.println (IOerrMessage);
-         } else {
-               System.out.println(studentName + ", your appointment(s) have been scheduled.");
-            System.out.println("Please arrive in time to finish the quiz before the end of the retake period.");
-            System.out.println("If you cannot make it, please cancel by sending email to your professor.");
+            file.createNewFile();
          }
+         FileWriter     fw = new FileWriter(file.getAbsoluteFile(), true); //append mode
+         BufferedWriter bw = new BufferedWriter(fw);
 
-      } else { // allIDs == null or name is null
-         if(map == null)
-            System.out.println ("You didn't choose any quizzes to retake.");
-         if(studentName == null || studentName.length() == 0)
-            System.out.println ("You didn't give a name ... no anonymous quiz retakes.");
+         bw.write(retakeQuizID + separator + studentName + "\n");
 
-         System.out.println("courseID=" + courseID + ". You can try again if you like.");
+         bw.flush();
+         bw.close();
+
+         // CLI: simplified the logic in this method somewhat from the servlet version.
+         // Respond to the student
+         System.out.println("");
+         System.out.println(studentName + ", your appointment has been scheduled.");
+         System.out.println("Please arrive in time to finish the quiz before the end of the retake period.");
+         System.out.println("If you cannot make it, please cancel by sending email to your professor.");
+      } else {
+         System.out.println("");
+         System.out.println("I don't have a retake time for that number. Please try again.");
+      }
+   } catch(IOException e) {
+      System.out.println("");
+      System.out.println("I failed and could not save your appointment.\nException message is: " + e);
+   }
+}
+
+// ===============================================================
+/* CLI: Dropped parameter "out", now we print to screen */
+// Print the quiz retake choices (maybe should also change the method name?)
+private static void printQuizScheduleForm(quizzes quizList, retakes retakesList, courseBean course)
+{
+   // Check for a week to skip
+   boolean skip = false;
+   LocalDate startSkip = course.getStartSkip();
+   LocalDate endSkip   = course.getEndSkip();
+
+   System.out.println("");
+   System.out.println("");
+   System.out.println("******************************************************************************");
+   System.out.println("GMU quiz retake scheduler for class " + course.getCourseTitle());
+   System.out.println("******************************************************************************");
+   System.out.println("");
+   System.out.println("");
+
+   // print the main form
+   System.out.println("You can sign up for quiz retakes within the next two weeks. ");
+   System.out.println("Enter your name (as it appears on the class roster), ");
+   System.out.println("then select which date, time, and quiz you wish to retake from the following list.");
+   System.out.println("");
+
+   LocalDate today  = LocalDate.now();
+   LocalDate endDay = today.plusDays(new Long(daysAvailable));
+   LocalDate origEndDay = endDay;
+   // if endDay is between startSkip and endSkip, add 7 to endDay
+   if(!endDay.isBefore(startSkip) && !endDay.isAfter(endSkip))
+   {  // endDay is in a skip week, add 7 to endDay
+      endDay = endDay.plusDays(new Long(7));
+      skip = true;
+   }
+
+   System.out.print  ("Today is ");
+   System.out.println((today.getDayOfWeek()) + ", " + today.getMonth() + " " + today.getDayOfMonth() );
+   System.out.print  ("Currently scheduling quizzes for the next two weeks, until ");
+   System.out.println((endDay.getDayOfWeek()) + ", " + endDay.getMonth() + " " + endDay.getDayOfMonth() );
+   System.out.print("");
+
+   // Unique integer for each retake and quiz pair
+   int quizRetakeCount = 0; /* CLI */
+   for(retakeBean r: retakesList)
+   {
+      LocalDate retakeDay = r.getDate();
+      if(!(retakeDay.isBefore(today)) && !(retakeDay.isAfter(endDay)))
+      {
+         // if skip && retakeDay is after the skip week, print a message
+         if(skip && retakeDay.isAfter(origEndDay))
+         {  // A "skip" week such as spring break.
+            System.out.println("      Skipping a week, no quiz or retakes.");
+            // Just print for the FIRST retake day after the skip week
+            skip = false;
+         }
+         // format: Friday, January 12, at 10:00am in EB 4430
+         System.out.println("RETAKE: " + retakeDay.getDayOfWeek() + ", " +
+                            retakeDay.getMonth() + " " +
+                            retakeDay.getDayOfMonth() + ", at " +
+                            r.timeAsString() + " in " +
+                            r.getLocation());
+
+         for(quizBean q: quizList)
+         {
+            LocalDate quizDay = q.getDate();
+            LocalDate lastAvailableDay = quizDay.plusDays(new Long(daysAvailable));
+            // To retake a quiz on a given retake day, the retake day must be within two ranges:
+            // quizDay <= retakeDay <= lastAvailableDay --> (!quizDay > retakeDay) && !(retakeDay > lastAvailableDay)
+            // today <= retakeDay <= endDay --> !(today > retakeDay) && !(retakeDay > endDay)
+            if(!quizDay.isAfter(retakeDay) && !retakeDay.isAfter(lastAvailableDay) &&
+                !today.isAfter(retakeDay) && !retakeDay.isAfter(endDay))
+            {
+               quizRetakeCount++; /* CLI */
+               // Put in a properties structure for writing to retake schedule file (CLI)
+               retakeQuizIDProps.setProperty(String.valueOf(quizRetakeCount), r.getID() + separator + q.getID()); /* CLI */
+               System.out.print  ("    " + quizRetakeCount + ") "); /* CLI */
+               System.out.println("Quiz " + q.getID() + " from " + quizDay.getDayOfWeek() + ", " + quizDay.getMonth() + " " + quizDay.getDayOfMonth() );
+            }
+         }
       }
    }
+   System.out.println("");
+}
+
+// ===============================================================
+// Build the file names in one place to make them easier to change
+private static void buildFileNames(String courseID) /* CLI */
+{
+   courseFileName  = dataLocation + courseBase  + "-" + courseID + ".xml"; /* CLI */
+   quizzesFileName = dataLocation + quizzesBase + "-" + courseID + ".xml"; /* CLI */
+   retakesFileName = dataLocation + retakesBase + "-" + courseID + ".xml"; /* CLI */
+   apptsFileName   = dataLocation + apptsBase   + "-" + courseID + ".txt"; /* CLI */
+}
+
+// ===============================================================
+// Get the course ID from the user
+private static String readCourseID(Scanner sc) /* CLI */
+{
+   System.out.print("Enter courseID: "); /* CLI */
+   return(sc.next()); /* CLI */
+}
+
+// ===============================================================
+// Read the course file
+private static courseBean readCourseFile(String courseID) throws Exception /* CLI */
+{
+   courseBean course; /* CLI */
+   courseReader cr = new courseReader(); /* CLI */
+   course          = cr.read(courseFileName);
+   return(course); /* CLI */
+}
+
+// ===============================================================
+// Read the quizzes file
+private static quizzes readQuizzes(String courseID) throws Exception /* CLI */
+{
+   quizzes quizList = new quizzes(); /* CLI */
+   quizReader qr    = new quizReader(); /* CLI */
+   quizList         = qr.read(quizzesFileName); /* CLI */
+   return(quizList); /* CLI */
+}
+
+// ===============================================================
+// Read the retakes file
+private static retakes readRetakes(String courseID) throws Exception /* CLI */
+{
+   retakes retakesList = new retakes();
+   retakesReader rr    = new retakesReader();
+   retakesList         = rr.read(retakesFileName);
+   return(retakesList); /* CLI */
+}
 
 } // end quizschedule class
