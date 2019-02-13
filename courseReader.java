@@ -29,57 +29,52 @@ import java.io.PrintWriter;
 public class courseReader
 {
 
-public courseBean read (String filename)
-       throws IOException, ParserConfigurationException, SAXException
-{
-   courseBean course = null;
+	public courseBean read (String filename)
+			throws IOException, ParserConfigurationException, SAXException
+	{
+		courseBean course = null;
 
-System.out.println("In course Reader, fileName: " +filename);
-   DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-   DocumentBuilder builder = factory.newDocumentBuilder();
-   Document document = builder.parse (new File (filename));
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		Document document = builder.parse (new File (filename));
 
-System.out.println("In course Reader");
-   // Get all the nodes
-   NodeList nodeList = document.getDocumentElement().getChildNodes();
-   for (int i = 0; i < nodeList.getLength(); i++)
-   {
-System.out.println("course Reader, i=" +i);
-      // XML structure is simple--6 elements
-      // Not validating the data values
-      Node node = nodeList.item(i);
-      if (node.getNodeType() == Node.ELEMENT_NODE)
-      {
-System.out.println("course Reader, in if");
-         Element elem = (Element) node;
+		// Get all the nodes
+		NodeList nodeList = document.getDocumentElement().getChildNodes();
+		for (int i = 0; i < nodeList.getLength(); i++)
+		{
+			// XML structure is simple--6 elements
+			// Not validating the data values
+			Node node = nodeList.item(i);
+			if (node.getNodeType() == Node.ELEMENT_NODE)
+			{
+				Element elem = (Element) node;
 
-         // quiz IDs should be unique
-         String courseID = elem.getElementsByTagName("courseID").item(0).getChildNodes().item(0).getNodeValue();
-System.out.println("course Reader, courseID: " + courseID);
-         String courseTitle = elem.getElementsByTagName("courseTitle").item(0).getChildNodes().item(0).getNodeValue();
-         String retakeDuration = elem.getElementsByTagName("retakeDuration").item(0).getChildNodes().item(0).getNodeValue();
-         String dataLocation = elem.getElementsByTagName("dataLocation").item(0).getChildNodes().item(0).getNodeValue();
+				// quiz IDs should be unique
+				String courseID = elem.getElementsByTagName("courseID").item(0).getChildNodes().item(0).getNodeValue();
+				String courseTitle = elem.getElementsByTagName("courseTitle").item(0).getChildNodes().item(0).getNodeValue();
+				String retakeDuration = elem.getElementsByTagName("retakeDuration").item(0).getChildNodes().item(0).getNodeValue();
+				String dataLocation = elem.getElementsByTagName("dataLocation").item(0).getChildNodes().item(0).getNodeValue();
 
-         // startSkipMonth is an integer 1..12
-         Integer startSkipMonth = Integer.parseInt(elem.getElementsByTagName("startSkipMonth").item(0).getChildNodes().item(0).getNodeValue());
-         // startSkipDay is integer 1..31
-         Integer startSkipDay = Integer.parseInt(elem.getElementsByTagName("startSkipDay").item(0).getChildNodes().item(0).getNodeValue());
+				// startSkipMonth is an integer 1..12
+				Integer startSkipMonth = Integer.parseInt(elem.getElementsByTagName("startSkipMonth").item(0).getChildNodes().item(0).getNodeValue());
+				// startSkipDay is integer 1..31
+				Integer startSkipDay = Integer.parseInt(elem.getElementsByTagName("startSkipDay").item(0).getChildNodes().item(0).getNodeValue());
 
-         // endSkipMonth is an integer 1..12
-         Integer endSkipMonth = Integer.parseInt(elem.getElementsByTagName("endSkipMonth").item(0).getChildNodes().item(0).getNodeValue());
-         // endSkipDay is integer 1..31
-         Integer endSkipDay = Integer.parseInt(elem.getElementsByTagName("endSkipDay").item(0).getChildNodes().item(0).getNodeValue());
+				// endSkipMonth is an integer 1..12
+				Integer endSkipMonth = Integer.parseInt(elem.getElementsByTagName("endSkipMonth").item(0).getChildNodes().item(0).getNodeValue());
+				// endSkipDay is integer 1..31
+				Integer endSkipDay = Integer.parseInt(elem.getElementsByTagName("endSkipDay").item(0).getChildNodes().item(0).getNodeValue());
 
-         int year = Year.now().getValue();
-         LocalDate startSkip = LocalDate.of(year, startSkipMonth, startSkipDay);
-         LocalDate endSkip   = LocalDate.of(year, endSkipMonth, endSkipDay);
+				int year = Year.now().getValue();
+				LocalDate startSkip = LocalDate.of(year, startSkipMonth, startSkipDay);
+				LocalDate endSkip   = LocalDate.of(year, endSkipMonth, endSkipDay);
 
-         course = new courseBean(courseID, courseTitle, retakeDuration, startSkip, endSkip, dataLocation);
+				course = new courseBean(courseID, courseTitle, retakeDuration, startSkip, endSkip, dataLocation);
 
-      } // end if
-   } // end for
+			} // end if
+		} // end for
 
-   return (course);
-} // end read
+		return (course);
+	} // end read
 
 } // end class

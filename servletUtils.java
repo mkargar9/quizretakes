@@ -2,12 +2,12 @@
 // Utilities for servlets ... shared methods
 package quizretakes;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.ServletException;
-import javax.servlet.ServletContext;
+//import javax.servlet.http.HttpServlet;
+//import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletResponse;
+//import javax.servlet.http.HttpSession;
+//import javax.servlet.ServletException;
+//import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -27,7 +27,7 @@ public class servletUtils
  * @throws ServletException
  * @throws IOException
 */
-static void printHeader (PrintWriter out) throws ServletException, IOException
+static void printHeader (PrintWriter out) throws IOException
 {
    out.println ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
    out.println ("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
@@ -55,7 +55,7 @@ static void printHeader (PrintWriter out) throws ServletException, IOException
  * @throws ServletException
  * @throws IOException
  */
-static void printFooter (PrintWriter out) throws ServletException, IOException
+static void printFooter (PrintWriter out) throws IOException
 {
    out.println ("<p style=\"font-size:80%;font-family:monospace; color:#888888\">");
    out.println ("Rasika Mohod &amp; Jeff Offutt");
@@ -71,7 +71,7 @@ static void printFooter (PrintWriter out) throws ServletException, IOException
  * @throws ServletException
  * @throws IOException
 */
-static void printNeedCourseID (PrintWriter out, String thisServlet, String message) throws ServletException, IOException
+static void printNeedCourseID (PrintWriter out, String thisServlet, String message) throws IOException
 {
    out.println ("<body onLoad=\"setFocusID()\" bgcolor=\"#DDEEDD\">");
    out.println ("");

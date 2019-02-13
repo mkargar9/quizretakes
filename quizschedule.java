@@ -54,14 +54,14 @@ import java.util.Properties; /* CLI */
  *    course.xml -- Data file with information about the course
  */
 
-public class quizsched
+public class quizschedule
 {
    // Used to pass retakeID,quizID pairs from printQuizScheduleForm() to readInputSave()
    private static Properties retakeQuizIDProps = new Properties(); /* CLI */
 
    // Data files
    /* CLI: All variables changed to static to use in main() */
-   private static final String dataLocation = "quizretakes/"; /* CLI */
+   private static final String dataLocation = System.getProperty("user.dir") + "\\src\\quizretakes\\"; /* CLI */
    private static final String separator    = ",";
    private static final String courseBase   = "course";
    private static final String quizzesBase  = "quiz-orig";
@@ -87,7 +87,6 @@ public static void main(String []argv) /* CLI */
    // Get course ID from user (could be passed as a command line parameter ...)
    String courseID = readCourseID(sc); /* CLI */
    buildFileNames(courseID); /* CLI */
-
    // Get information about the course
    courseBean course;
    try {
@@ -96,7 +95,6 @@ public static void main(String []argv) /* CLI */
       System.out.println("Can't find the data files for course ID " + courseID + ". You can try again with a different course ID.");
       return;
    }
-
    daysAvailable = Integer.parseInt(course.getRetakeDuration());
 
    try { // Read the files and print the form
@@ -165,7 +163,7 @@ private static void readInputSave(Scanner sc, String courseID) /* CLI */
 /* CLI: Dropped parameter "out", now we print to screen */
 // Print the quiz retake choices (maybe should also change the method name?)
 private static void printQuizScheduleForm(quizzes quizList, retakes retakesList, courseBean course)
-{
+{    
    // Check for a week to skip
    boolean skip = false;
    LocalDate startSkip = course.getStartSkip();
