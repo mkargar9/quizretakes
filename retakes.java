@@ -48,6 +48,11 @@ public class retakes implements Iterable<retakeBean>
    {
       retakes.add (qr);
    }
+   
+   public retakeBean get(int i)
+   {
+	   return retakes.get(i);
+   }
 
    public String toString ()
    {
