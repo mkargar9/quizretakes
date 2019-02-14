@@ -104,46 +104,38 @@ public static void main(String []argv) /* CLI */
    {
 	   System.out.println("Welcome, Professor!");
 	   try 
-	   { 
-		   // Read the files and print the form
+	   {
 		   retakes retakesList; /* CLI */
 		   retakesList = readRetakes(courseID); /* CLI */
-		   //Read file line-by-line via for loop
-		   //inside for loop, parse line using separator variable, saving each substring (retakeid, quizid, name)
 
 		   File f = new File(apptsFileName);
 		   Scanner fileScanner;
-		   try {
+		   try
+		   {
 			   fileScanner = new Scanner(f);
 			   while (fileScanner.hasNextLine())
 			   {
 				   String line = fileScanner.nextLine();
 				   String[] parts = line.split(",");
-				   int retakeID = Integer.parseInt(parts[0]);
+				   int retakeID = Integer.parseInt(parts[0]) - 1;
 				   int quizID = Integer.parseInt(parts[1]);
 				   String name = parts[2];
 				   retakeBean retake = retakesList.get(retakeID);
-				   System.out.println();
-				   
-				   //*retake* = *retakeDate*, at *retakeTime* in *retakeLocation*
-				   //print format: *name* is taking Quiz *quizid* on *retake*
-				   //System.out.println(retakeID + retakeDate + ", at " + retakeTime + "in ");
 				   System.out.println(name + " is taking Quiz " + quizID + " on " + retake.getDayOfWeek() + ", at " +
 						   retake.getDate() + " in " + retake.getLocation());
 			   }
 			   fileScanner.close();
-		   } catch (FileNotFoundException e) {
-			   // TODO Auto-generated catch block
+		   }
+		   catch (FileNotFoundException e)
+		   {
 			   e.printStackTrace();
-		   } //Appointment file name	
-
+		   }
 	   } 
 	   catch(Exception e) 
 	   {
-		   System.out.println("Can't read the data files for course ID " + courseID + ". You can try again with a different courseID.");
+		   System.out.println(e);
 		   return;
 	   }
-	   
    }
    else if(password.equals("Student"))
    {
