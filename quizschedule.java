@@ -83,7 +83,7 @@ public class quizschedule
 public static void main(String []argv) /* CLI */
 {
    Scanner sc = new Scanner(System.in); /* CLI */
-
+   
    // Get course ID from user (could be passed as a command line parameter ...)
    String courseID = readCourseID(sc); /* CLI */
    buildFileNames(courseID); /* CLI */
@@ -96,21 +96,43 @@ public static void main(String []argv) /* CLI */
       return;
    }
    daysAvailable = Integer.parseInt(course.getRetakeDuration());
+   
+   System.out.println("Students, type \"Student\". Professors, enter the password: ");
+   String password = sc.next();
+   if(password.equals("Prof"))
+   {
+	   System.out.println("Welcome, Professor!");
+	   try { // Read the files and print the form
+		   quizzes quizList; /* CLI */
+		   retakes retakesList; /* CLI */
+		   quizList    =  readQuizzes(courseID); /* CLI */
+		   retakesList = readRetakes(courseID); /* CLI */
+	   } catch(Exception e) {
+		   System.out.println("Can't read the data files for course ID " + courseID + ". You can try again with a different courseID.");
+		   return;
+	   }
+	   //Read file line-by-line via for loop
+	   		//inside for loop, parse line using separator variable, saving each substring (retakeid, quizid, name)
+	   		//*retake* = *retakeDate*, at *retakeTime* in *retakeLocation*
+	   		//print format: *name* is taking Quiz *quizid* on *retake*
+   } else if(password.equals("Student"))
+   {
+	   try { // Read the files and print the form
+	      quizzes quizList; /* CLI */
+	      retakes retakesList; /* CLI */
+	      quizList    =  readQuizzes(courseID); /* CLI */
+	      retakesList = readRetakes(courseID); /* CLI */
+	      // Inside try-block so this won't print if files can't be read
+	      printQuizScheduleForm(quizList, retakesList, course);
+	   } catch(Exception e) {
+	      System.out.println("Can't read the data files for course ID " + courseID + ". You can try again with a different courseID.");
+	      return;
+	   }
 
-   try { // Read the files and print the form
-      quizzes quizList; /* CLI */
-      retakes retakesList; /* CLI */
-      quizList    =  readQuizzes(courseID); /* CLI */
-      retakesList = readRetakes(courseID); /* CLI */
-      // Inside try-block so this won't print if files can't be read
-      printQuizScheduleForm(quizList, retakesList, course);
-   } catch(Exception e) {
-      System.out.println("Can't read the data files for course ID " + courseID + ". You can try again with a different courseID.");
-      return;
+	   // This replaces the submit-response (was doPost() )
+	   readInputSave(sc, courseID); /* CLI */
    }
-
-   // This replaces the submit-response (was doPost() )
-   readInputSave(sc, courseID); /* CLI */
+   
 }  // end main()
 
 // ===============================================================
