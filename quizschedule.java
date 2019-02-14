@@ -102,20 +102,38 @@ public static void main(String []argv) /* CLI */
    if(password.equals("Prof"))
    {
 	   System.out.println("Welcome, Professor!");
-	   try { // Read the files and print the form
+	   try 
+	   { // Read the files and print the form
 		   quizzes quizList; /* CLI */
 		   retakes retakesList; /* CLI */
 		   quizList    =  readQuizzes(courseID); /* CLI */
 		   retakesList = readRetakes(courseID); /* CLI */
-	   } catch(Exception e) {
+	   } 
+	   catch(Exception e) 
+	   {
 		   System.out.println("Can't read the data files for course ID " + courseID + ". You can try again with a different courseID.");
 		   return;
 	   }
-	   //Read file line-by-line via for loop
+	   		//Read file line-by-line via for loop
 	   		//inside for loop, parse line using separator variable, saving each substring (retakeid, quizid, name)
+	   		
+
+	   Scanner fileScanner = new Scanner(apptsFileName); //Appointment file name	
+	   while (fileScanner.hasNextLine())
+	   	{
+	   		String line = fileScanner.nextLine();
+	   		int retakeID = Integer.parseInt(line.substring(0,1));
+	   		int quizID = Integer.parseInt(line.substring(2,3));
+	   		String name = line.substring(4);
 	   		//*retake* = *retakeDate*, at *retakeTime* in *retakeLocation*
 	   		//print format: *name* is taking Quiz *quizid* on *retake*
-   } else if(password.equals("Student"))
+	   		//System.out.println(retakeID + retakeDate + ", at " + retakeTime + "in ");
+	   		//System.out.println(name + "is taking Quiz" + quizID + "on" + retake);
+	   	}
+	   
+	   fileScanner.close();
+   }
+   else if(password.equals("Student"))
    {
 	   try { // Read the files and print the form
 	      quizzes quizList; /* CLI */
