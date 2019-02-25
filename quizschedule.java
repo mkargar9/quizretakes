@@ -206,7 +206,7 @@ private static void readInputSave(Scanner sc, String courseID) /* CLI */
 // ===============================================================
 /* CLI: Dropped parameter "out", now we print to screen */
 // Print the quiz retake choices (maybe should also change the method name?)
-private static void printQuizScheduleForm(quizzes quizList, retakes retakesList, courseBean course)
+public static void printQuizScheduleForm(quizzes quizList, retakes retakesList, courseBean course)
 {    
    // Check for a week to skip
    boolean skip = false;
