@@ -2,11 +2,14 @@ package quizretakes;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.time.LocalDate;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import static org.hamcrest.CoreMatchers.*;
 
 public class quizscheduleTest 
 {
@@ -25,13 +28,17 @@ public class quizscheduleTest
 		quizList = new quizzes();
 		retakesList = new retakes();
 		course = new courseBean("swe437", "Software Testing", "14", startSkip, endSkip, "/var/www/CS/webapps/offutt/WEB-INF/data/");
-
 	}
 
 	@After
 	public void tearDown() throws Exception
 	{
-		
+		//resets all the data
+		startSkip = null;
+		endSkip = null;
+		quizList = null;
+		retakesList = null;
+		course = null;
 	}
 	
 	/**
@@ -50,10 +57,31 @@ public class quizscheduleTest
 		quizschedule.printQuizScheduleForm(null, null, course); //should return NullPointerException
 	}
 
+	/**
+	 * This method shows how to retrieve the System.out content
+	 */
 	@Test
-	public void testPrintQuizScheduleForm()
+	public void testRetrievingOutput()
 	{
+		// Create a stream to hold the output
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		PrintStream ps = new PrintStream(baos);
+		// IMPORTANT: Save the old System.out!
+		PrintStream old = System.out;
+		// Tell Java to use your special stream
+		System.setOut(ps);
 		
+		// Print some output: goes to your special stream
+		System.out.print("Foofoofoo!"); //replace this line with calling printQuizScheduleForm
+		
+		// Put things back
+		System.out.flush();
+		System.setOut(old);
+		// Show what happened (need to use the toString() method)
+		assertEquals(baos.toString(), "Foofoofoo!");
+		
+		//another way to test a string for containing information
+		assertThat(baos.toString(), both(endsWith("!")).and(containsString("Foo")));
 	}
 
 }
