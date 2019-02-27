@@ -6,7 +6,7 @@
     <location>EB 4430</location> <!-- Prof's office hours -->
     <dateGiven> <!-- Same format as in quiz-orig.xml -->
       <month>2</month> <!-- 01..12 -->
-      <day>19</day> <!-- 1..31 -->
+      <day>28</day> <!-- 1..31 -->
       <hour>15</hour> <!-- 0..23 -->
       <minute>30</minute> <!--  0-59 -->
     </dateGiven>
@@ -16,8 +16,8 @@
     <id>2</id>
     <location>???</location> <!-- TA's office hours -->
     <dateGiven> <!-- Same format as in quizzes.xml -->
-      <month>2</month> <!-- 01..12 -->
-      <day>26</day> <!-- 1..31 -->
+      <month>3</month> <!-- 01..12 -->
+      <day>5</day> <!-- 1..31 -->
       <hour>16</hour> <!-- 0..23 -->
       <minute>00</minute> <!--  0-59 -->
     </dateGiven>
