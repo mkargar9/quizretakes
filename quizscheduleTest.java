@@ -55,19 +55,26 @@ public class quizscheduleTest
 	public void testNullPointerException()
 	{
 		//should return NullPointerException
-		quizschedule.printQuizScheduleForm(null, null, null); //check if all 3 inputs are null
+		//check if all 3 inputs are null
+		quizschedule.printQuizScheduleForm(null, null, null); //Controllability
 		
-		quizschedule.printQuizScheduleForm(quizList, null, null); //should return NullPointerException
+		//should return NullPointerException 
+		quizschedule.printQuizScheduleForm(quizList, null, null); //Controllability
 		
-		quizschedule.printQuizScheduleForm(null, retakesList, null);  //should return NullPointerException
+		//should return NullPointerException
+		quizschedule.printQuizScheduleForm(null, retakesList, null); //Controllability
 
-		quizschedule.printQuizScheduleForm(null, null, course); //should return NullPointerException
+		//should return NullPointerException
+		quizschedule.printQuizScheduleForm(null, null, course); //Controllability
 		
-		quizschedule.printQuizScheduleForm(null, retakesList, course);  //should return NullPointerException
+		 //should return NullPointerException
+		quizschedule.printQuizScheduleForm(null, retakesList, course); //Controllability
 
-		quizschedule.printQuizScheduleForm(quizList, null, course); //should return NullPointerException
+		//should return NullPointerException
+		quizschedule.printQuizScheduleForm(quizList, null, course); //Controllability
 		
-		quizschedule.printQuizScheduleForm(quizList, retakesList, null); //should return NullPointerException
+		//should return NullPointerException
+		quizschedule.printQuizScheduleForm(quizList, retakesList, null); //Controllability
 	}
 	
 	/**
@@ -89,10 +96,10 @@ public class quizscheduleTest
 		String output = out.toString();
 		
 		//tests header output print statements 
-		assertThat(output, CoreMatchers.containsString("GMU quiz retake scheduler for class " + course.getCourseTitle()));
-		assertThat(output, CoreMatchers.containsString("You can sign up for quiz retakes within the next two weeks. "));
-		assertThat(output, CoreMatchers.containsString("Enter your name (as it appears on the class roster), "));
-		assertThat(output, CoreMatchers.containsString("then select which date, time, and quiz you wish to retake from the following list."));
+		assertThat(output, CoreMatchers.containsString("GMU quiz retake scheduler for class " + course.getCourseTitle())); //Observability
+		assertThat(output, CoreMatchers.containsString("You can sign up for quiz retakes within the next two weeks. ")); //Observability
+		assertThat(output, CoreMatchers.containsString("Enter your name (as it appears on the class roster), ")); //Observability
+		assertThat(output, CoreMatchers.containsString("then select which date, time, and quiz you wish to retake from the following list.")); //Observability
 	}
 	
 	/** 
@@ -114,10 +121,10 @@ public class quizscheduleTest
 		String output = out.toString();
 		
 		//test prints out correct today date "Today is ...."
-		assertThat(output, CoreMatchers.containsString(today.getDayOfWeek() + ", " + today.getMonth() + " " + today.getDayOfMonth()));
+		assertThat(output, CoreMatchers.containsString(today.getDayOfWeek() + ", " + today.getMonth() + " " + today.getDayOfMonth())); //Observability
 		
 		//tests prints out correct end date "scheduling quizzes until ..."
-		assertThat(output, CoreMatchers.containsString(endDay.getDayOfWeek() + ", " + endDay.getMonth() + " " + endDay.getDayOfMonth()));
+		assertThat(output, CoreMatchers.containsString(endDay.getDayOfWeek() + ", " + endDay.getMonth() + " " + endDay.getDayOfMonth())); //Observability
 	}
 	
 	/**
@@ -139,8 +146,8 @@ public class quizscheduleTest
 		String output = out.toString();
 		
 		//tests retake output print statements 
-		assertThat(output, CoreMatchers.containsString("RETAKE: THURSDAY, FEBRUARY 28, at 15:30 in EB 4430"));
-		assertThat(output, CoreMatchers.containsString("RETAKE: TUESDAY, MARCH 5, at 16:00 in ???"));
+		assertThat(output, CoreMatchers.containsString("RETAKE: THURSDAY, FEBRUARY 28, at 15:30 in EB 4430")); //Observability
+		assertThat(output, CoreMatchers.containsString("RETAKE: TUESDAY, MARCH 5, at 16:00 in ???")); //Observability
 	}
 	
 	/**
@@ -162,9 +169,9 @@ public class quizscheduleTest
 		String output = out.toString();
 		
 		//tests quiz output print statements 
-		assertThat(output, CoreMatchers.containsString("1) Quiz 1 from TUESDAY, FEBRUARY 19"));
-		assertThat(output, CoreMatchers.containsString("2) Quiz 2 from TUESDAY, FEBRUARY 26"));
-		assertThat(output, CoreMatchers.containsString("3) Quiz 1 from TUESDAY, FEBRUARY 19"));
-		assertThat(output, CoreMatchers.containsString("4) Quiz 2 from TUESDAY, FEBRUARY 26"));
+		assertThat(output, CoreMatchers.containsString("1) Quiz 1 from TUESDAY, FEBRUARY 19")); //Observability
+		assertThat(output, CoreMatchers.containsString("2) Quiz 2 from TUESDAY, FEBRUARY 26")); //Observability
+		assertThat(output, CoreMatchers.containsString("3) Quiz 1 from TUESDAY, FEBRUARY 19")); //Observability
+		assertThat(output, CoreMatchers.containsString("4) Quiz 2 from TUESDAY, FEBRUARY 26")); //Observability
 	}
 }
