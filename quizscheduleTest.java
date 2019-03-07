@@ -61,7 +61,7 @@ public class quizscheduleTest
 	}
 	
 	@Test
-	public void threeNewQuizzes()
+	public void newQuiz()
 	{
 		quizschedule.quizEditor(this.quizList, retakesList, course);
 		
