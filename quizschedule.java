@@ -336,11 +336,29 @@ public class quizschedule
 		int choice = s.nextInt();
 		if(choice == 1)
 		{
-			
-		} else if(choice == 2)
+			System.out.println("Type the number quizzes you want to add");
+			int numQuizzes = s.nextInt();
+			for ( int i = 0; i<numQuizzes; i++)
+			{
+				System.out.println("Please enter Quiz ID");
+				int quizID = s.nextInt();
+				System.out.println("Please enter Numeric Representation of Month Quiz Given");
+				int month = s.nextInt();
+				System.out.println("Please enter Numeric Representation of Day Quiz Given");
+				int day = s.nextInt();
+				System.out.println("Please enter Numeric Representation of Hour Quiz Given");
+				int hour = s.nextInt();
+				System.out.println("Please enter Numeric Representation of Minute Quiz Given");
+				int minute = s.nextInt();
+				quizBean q = new quizBean(quizID, month, day, hour, minute);
+				addQuiz(q, quizList);
+			}
+		} 
+		else if(choice == 2)
 		{
 			
-		} else
+		} 
+		else
 		{
 			s.close();
 			return;
@@ -350,9 +368,17 @@ public class quizschedule
 	}
 	
 	//adds a quiz
-	public static void addQuiz()
+	public static void addQuiz(quizBean q, quizzes quizList)
 	{
-		return;
+		if ( q.equals(null) || quizList.equals(null) )
+		{
+			return;
+		}
+		else
+		{
+			quizList.addQuiz(q);
+			return;
+		}
 	}
 
 	//adds a retake

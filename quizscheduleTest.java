@@ -40,12 +40,13 @@ public class quizscheduleTest
 	@Test
 	public void testNoNewQuiz()
 	{
-		quizschedule.addQuiz();
-		
+		quizschedule.quizEditor(quizList, retakesList, course);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PrintStream ps = new PrintStream(out);
 		PrintStream old = System.out;
 		System.setOut(ps);
+	
+		//quit on option 3
 		
 		quizschedule.printQuizScheduleForm(quizList, retakesList, course);
 		
@@ -57,6 +58,29 @@ public class quizscheduleTest
 		//tests quiz output print statements 
 		assertThat(output, CoreMatchers.containsString("1) Quiz 1 from TUESDAY, FEBRUARY 26"));
 		assertThat(output, CoreMatchers.containsString("2) Quiz 2 from TUESDAY, MARCH 5"));
+	}
+	
+	@Test
+	public void threeNewQuizzes()
+	{
+		quizschedule.quizEditor(this.quizList, retakesList, course);
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream ps = new PrintStream(out);
+		PrintStream old = System.out;
+		System.setOut(ps);
+		
+		quizschedule.printQuizScheduleForm(this.quizList, retakesList, course);
+		
+		System.out.flush();
+		System.setOut(old);
+		
+		String output = out.toString();
+		
+		//tests quiz output print statements 
+		assertThat(output, CoreMatchers.containsString("1) Quiz 1 from TUESDAY, FEBRUARY 26"));
+		assertThat(output, CoreMatchers.containsString("2) Quiz 2 from TUESDAY, MARCH 5"));
+		assertThat(output, CoreMatchers.containsString("3) Quiz 3 from THURSDAY, MARCH 7")); //new quiz
 	}
 
 	@After
