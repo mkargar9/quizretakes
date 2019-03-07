@@ -36,6 +36,28 @@ public class quizscheduleTest
 		retakesList = rr.read(System.getProperty("user.dir") + "\\\\src\\\\quizretakes\\\\quiz-retakes-swe437.xml");
 		course = new courseBean(courseID, "Software Testing", "14", startSkip, endSkip, "/var/www/CS/webapps/offutt/WEB-INF/data/");
 	}
+	
+	@Test
+	public void testNoNewQuiz()
+	{
+		quizschedule.addQuiz();
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream ps = new PrintStream(out);
+		PrintStream old = System.out;
+		System.setOut(ps);
+		
+		quizschedule.printQuizScheduleForm(quizList, retakesList, course);
+		
+		System.out.flush();
+		System.setOut(old);
+		
+		String output = out.toString();
+		
+		//tests quiz output print statements 
+		assertThat(output, CoreMatchers.containsString("1) Quiz 1 from TUESDAY, FEBRUARY 26"));
+		assertThat(output, CoreMatchers.containsString("2) Quiz 2 from TUESDAY, MARCH 5"));
+	}
 
 	@After
 	public void tearDown() throws Exception
@@ -146,8 +168,8 @@ public class quizscheduleTest
 		String output = out.toString();
 		
 		//tests retake output print statements 
-		assertThat(output, CoreMatchers.containsString("RETAKE: THURSDAY, FEBRUARY 28, at 15:30 in EB 4430")); //Observability
-		assertThat(output, CoreMatchers.containsString("RETAKE: TUESDAY, MARCH 5, at 16:00 in ???")); //Observability
+		assertThat(output, CoreMatchers.containsString("RETAKE: TUESDAY, MARCH 12, at 15:30 in EB 4430")); //Observability
+		assertThat(output, CoreMatchers.containsString("RETAKE: THURSDAY, MARCH 14, at 16:00 in ???")); //Observability
 	}
 	
 	/**
@@ -169,9 +191,8 @@ public class quizscheduleTest
 		String output = out.toString();
 		
 		//tests quiz output print statements 
-		assertThat(output, CoreMatchers.containsString("1) Quiz 1 from TUESDAY, FEBRUARY 19")); //Observability
-		assertThat(output, CoreMatchers.containsString("2) Quiz 2 from TUESDAY, FEBRUARY 26")); //Observability
-		assertThat(output, CoreMatchers.containsString("3) Quiz 1 from TUESDAY, FEBRUARY 19")); //Observability
-		assertThat(output, CoreMatchers.containsString("4) Quiz 2 from TUESDAY, FEBRUARY 26")); //Observability
+		assertThat(output, CoreMatchers.containsString("1) Quiz 1 from TUESDAY, FEBRUARY 26")); //Observability
+		assertThat(output, CoreMatchers.containsString("2) Quiz 2 from TUESDAY, MARCH 5")); //Observability
+		assertThat(output, CoreMatchers.containsString("3) Quiz 2 from TUESDAY, MARCH 5")); //Observability
 	}
 }
